@@ -2,7 +2,7 @@
 numero_entradas =int(input("Introduce el numero de variables: "))+1       #En esta variable se guardaran el numero de variables o columnas
 #Le sumo 1, porque en la primer columna, se almacenará el número en decimal desde [0-hasta el último bit]
 filas=2
-filas = filas**(numero_entradas-1)       #Las columnas será igual a 2 elevado al numero de entradas
+filas = filas**(numero_entradas-1)       #Las filas serán igual a 2 elevado al numero de entradas
 matriz = []     #definimos la matriz
 
 
