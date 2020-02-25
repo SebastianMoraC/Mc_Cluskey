@@ -1,6 +1,6 @@
 import numpy as np
 
-class nodo(object):
+class nodo(object): #objeto para armacenar tupla de binario y bumero decimal
 
     def __init__(self,combinacion,binario):
         self.combinacion=combinacion
@@ -42,7 +42,21 @@ if __name__ == "__main__":
         for i in range(repeticiones):   #realiza la cantidad de repeticiones correspondientes a cada columna
             for a in range(cantidad):   #coloca la cantidad correspondiente de cada 0 por cada repeticion
                 tablaverdad[a][c]=0
-            for b in range(cantidad):
+            for b in range(cantidad):    #coloca la cantidad correspondiente de cada 0 por cada repeticion
                 tablaverdad[a][c]=0
-        repeticiones=repeticiones*2
-        cantidad=cantidad/2
+        repeticiones=repeticiones*2  #aumenta la cantidad de repeticiones en cada fila
+        cantidad=cantidad/2            #cantidad de 1 y 0 a ingresar a la tabla
+
+    Mcclaukey1=list() #lista de todas las grupaciones
+    listac=list() #lista para grupar por cantidad de 1
+    templist=list() #lista para recolectar el binario
+    
+    iterador=1
+    while iterador <= numero_entradas-2:  # se itera la cantidad de veces como variables hayan
+        for i in range(filas):    #se busca en cada fila
+            if tablaverdad[i][numero_entradas-1] == 1: # se verifica si la funcion es valida en ese numero
+                for a in range(numero_entradas-1): #se extrae el numeor binario
+                    templist.append(tablaverdad[i][a]) #se guarda en la lista
+                n1=nodo(templist,tablaverdad[i][0]) #se añadade al nodo
+                listac.append(n1) #finalmente se agrea a la lista correspondiente a esta cantidad de 1
+        iterador+=1
