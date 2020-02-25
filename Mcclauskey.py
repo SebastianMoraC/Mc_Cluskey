@@ -55,8 +55,13 @@ if __name__ == "__main__":
     while iterador <= numero_entradas-2:  # se itera la cantidad de veces como variables hayan
         for i in range(filas):    #se busca en cada fila
             if tablaverdad[i][numero_entradas-1] == 1: # se verifica si la funcion es valida en ese numero
-                for a in range(numero_entradas-1): #se extrae el numeor binario
+                count=0
+                for a in range(numero_entradas-1): #se extrae el numero binario
                     templist.append(tablaverdad[i][a]) #se guarda en la lista
-                n1=nodo(templist,tablaverdad[i][0]) #se añadade al nodo
-                listac.append(n1) #finalmente se agrea a la lista correspondiente a esta cantidad de 1
-        iterador+=1
+                    if tablaverdad[i][a] == 1: # se cuenta la cantidad de unos que contiene la tupla bianria
+                            count+=1 #contador de unos
+                if count == iterador: #en caso de que cuente con la cantidad de unos correspondientes al iterador={1,2,3,..,n}
+                    n1=nodo(templist,tablaverdad[i][0]) #se añade al nodo
+                    listac.append(n1) #finalmente se agrea a la lista correspondiente a esta cantidad de 1
+        Mcclaukey1.append(listac) #se añade la lista de tuplas ordenada segun su cantidad de unos
+        iterador+=1 # aumenta iterador para buscar la siguiente cantidad de unos
