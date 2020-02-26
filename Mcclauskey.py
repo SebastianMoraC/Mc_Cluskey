@@ -55,9 +55,9 @@ if __name__ == "__main__":
     
     llenar_matriz(filas,numero_entradas,tablaverdad)
 
-    Mcclaukey1=[] #lista de todas las grupaciones
-    listac=[] #lista para grupar por cantidad de 1
-    templist=[] #lista para recolectar el binario
+    Mcclaukey1=list() #lista de todas las grupaciones
+    listac=list() #lista para grupar por cantidad de 1
+    templist=list() #lista para recolectar el binario
     
     iterador=1
     while iterador <= numero_entradas-2:  # se itera la cantidad de veces como variables hayan
