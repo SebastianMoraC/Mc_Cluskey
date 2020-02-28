@@ -34,16 +34,22 @@ def llenar_matriz(filas, columnas, matriz):  #Esta funcion llena las matrices de
 
 def minterms(matriz,filas):
     matriz_nueva=[]
+    iteracion=0
     print("--------------------------------------------------------------------------------------------------------------------")
-    print("Ingrese el numero -1 cuando quiera finalizar de ingresar numeros, los numeros deben estar entre [0-", filas-1,"]")
-    for i in range(filas):
-
+    print("Ingrese el numero -1 cuando quiera finalizar de ingresar numeros, los numeros deben estar entre: [0-", filas-1,"]")
+    #for i in range(filas):
+    while iteracion<filas:
         valor=int(input("Ingrese el minterm: "))
-        
-        if valor!=-1:
-            matriz_nueva.append(matriz[valor])
+        if valor<=filas-1:
+            if valor!=-1:
+                matriz_nueva.append(matriz[valor])
+                iteracion += 1
+            else:
+                break
         else:
-            break
+            print("INGRESE UN NUMERO ENTRE: [0-",filas-1,"]")
+
+
     return matriz_nueva
 if __name__ == "__main__":
 
