@@ -51,6 +51,32 @@ def minterms(matriz,filas):
 
 
     return matriz_nueva
+
+def comparacionMC(MCclauskey):
+    Mcclauskeycomplete=list()
+    
+    templist1=list() #lista para tomar una agrupacion 
+    templist2=list() #lista para tomar la siguiente agrupacion
+    
+    i=0
+    while len(MCclauskey) >= i+1: # comenzamos a sacar cada agrupacion de 1
+        templist1=MCclauskey[i] # tomamos una agrupacion de unos
+        templist2=MCclauskey[i+1] #y lurgo tomamos la siguiente agrupacion
+        
+        for a in templist1: #e comienza a recorrer la primera agrupacion con le fin de sacar una elemento y compararlos con todos los de la agrupacion siguiente
+            for b in templist2: # se recorre la segunda agrupacion para compararla completamente con el elemento de sacado anteiormente
+                if a.combinacion == b.combinacion:# se consulta si estos dos elemetos son iguales
+                    temp= list() # esta variable temporal se encargara de solamente guardar el binario
+                    for c in range(a.combinacion): # se comienzan a recorrer ambos elementos con el fin de encontrar la posicion donde se encuentra el uno en comun
+                        if a.combinacion[c] == b.combinacion[c]: # se consulta si precisamente la posisicon en cuestion contiene el uno en nambos elementos
+                            temp.append("-")
+                        temp.append(a.combinacion[c])
+                        ######
+                           
+                            
+                            
+            
+    
 if __name__ == "__main__":
 
     numero_entradas = int(input("Introduce el numero de variables: ")) +1  # En esta variable se guardaran el numero de variables o columnas
