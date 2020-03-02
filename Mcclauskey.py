@@ -20,28 +20,93 @@ def dibujar_matriz(matriz,columnas,filas):      #Funcion que dibuja matrices
             print(matriz[i][j],end="")              #El end se utiliza para que no se haga cambio de linea al imprimir en pantalla
         print("")                       #Con esta linea hago el cambio de columna
 
-def llenar_matriz(filas,numero_entradas,matriz):          #Cree acá la función que llene la matriz
-    cantidad=filas/2 #cantidad correspondiente a cada grupo de "1" y "0" en cada fila ej:(para) en la primer fila van ocho unos y ocho ceros correspondiente
-    repeticiones=1  #cantidad de veces que se tienen que repetir las cantidades anteriores
+def llenar_matriz(filas,columnas,matriz):          #Cree acá la función que llene la matriz
+    cantidad=filas//2
+    repeticiones = 1
+    iteracion= 0
 
-    for c in range(numero_entradas-2):  #recorre cada colunma
-        for i in range(filas):  #se llena la primer columna con los valores decimales
-            tablaverdad[i][0]=i
-        for i in range(repeticiones):   #realiza la cantidad de repeticiones correspondientes a cada columna
-            for a in range(cantidad):   #coloca la cantidad correspondiente de cada 0 por cada repeticion
-                tablaverdad[a][c]=0
-            for b in range(cantidad):    #coloca la cantidad correspondiente de cada 0 por cada repeticion
-                tablaverdad[a][c]=0
-        repeticiones=repeticiones*2  #aumenta la cantidad de repeticiones en cada fila
-        cantidad=cantidad/2            #cantidad de 1 y 0 a ingresar a la tabla
+    for c in range(1,columnas):  # recorre cada columna
+        for i in range(repeticiones):  # realiza la cantidad de repeticiones correspondientes a cada columna
 
-def comparacionesMC(Mcclaukey1):
-    Mcclaukeycomplete=list()
-    templist1=list()
-    templist2=list()
+            for a in range(cantidad):  # coloca la cantidad correspondiente de cada 0 por cada repeticion
+                matriz[iteracion][c] = 0
+                iteracion=iteracion+1  #La iteraccion me indica que fila irá el numero
+            for b in range(cantidad):  # coloca la cantidad correspondiente de cada 1 por cada repeticion
+                matriz[iteracion][c] = 1
+                iteracion = iteracion + 1
+        repeticiones = repeticiones * 2  # aumenta la cantidad de repeticiones en cada fila
+        cantidad = cantidad // 2  # Divide la cantidad de 0 y 1 que entraran
+        iteracion=0
+    return matriz
 
-    for i in Mcclaukey1:
-        ###################################################
+def minterms(matriz,filas): #se toman los valores binarios donde la funcion booleana es valida
+    matriz_nueva=[]
+    iteracion=0
+    print("--------------------------------------------------------------------------------------------------------------------")
+    print("Ingrese el numero -1 cuando quiera finalizar de ingresar numeros, los numeros deben estar entre: [0-", filas-1,"]")
+    #for i in range(filas):
+    while iteracion<filas:
+        valor=int(input("Ingrese el minterm: "))
+        if valor<=filas-1:
+            if valor!=-1:
+                matriz_nueva.append(matriz[valor])
+                iteracion += 1
+            else:
+                break
+        else:
+            print("INGRESE UN NUMERO ENTRE: [0-",filas-1,"]")
+
+
+    return matriz_nueva
+
+def EMCclauskey(matriz,variables,filas): # se ordenan los valores binarios por cantidad de unos presentes
+    Mcclauskey=list() #lista final donde estara la agrupacion por unos
+    tempcombinaciones=list() #lista temporal donde se almacenara cada grupo de unos 
+    tempcombinacion=list()
+    tempdecimal=list() #lista para los valores decimales Nota: en primera instancia sera un unico valor pereo mientras se ejecuta el rpoceso de mclauskey se obtendran mas valores
+
+    iteracion=0
+    while iteracion <= variables:
+        for a in range(filas):
+            count=0
+            for b in range (1,variables):
+                if matriz[a][b] == 1:
+                    count+=1
+                tempcombinacion.append(matriz[a][b])
+                # como #"$"!#"$!#!$ se borra toda una fila de la matriz?"
+            if count == iteracion:
+                tempdecimal.append(matriz[a][0])
+                n=nodo(tempcombinacion,tempdecimal)
+                tempcombinacion.clear()
+                tempdecimal.clear()
+                tempcombinaciones.append(n)
+        Mcclauskey.append(tempcombinaciones)
+        tempcombinaciones.clear()
+        iteracion+=1
+
+    return Mcclauskey
+                
+                
+def comparacionMC(MCclauskey):
+    Mcclauskeycomplete=list()
+    
+    templist1=list() #lista para tomar una agrupacion 
+    templist2=list() #lista para tomar la siguiente agrupacion
+    
+    i=0
+    while len(MCclauskey) >= i+1: # comenzamos a sacar cada agrupacion de 1
+        templist1=MCclauskey[i] # tomamos una agrupacion de unos
+        templist2=MCclauskey[i+1] #y luego tomamos la siguiente agrupacion
+        
+        for a in templist1: #e comienza a recorrer la primera agrupacion con le fin de sacar una elemento y compararlos con todos los de la agrupacion siguiente
+            for b in templist2: # se recorre la segunda agrupacion para compararla completamente con el elemento de sacado anteiormente
+                if a.combinacion == b.combinacion:# se consulta si estos dos elemetos son iguales
+                    temp= list() # esta variable temporal se encargara de solamente guardar el binario
+                    for c in range(a.combinacion): # se comienzan a recorrer ambos elementos con el fin de encontrar la posicion donde se encuentra el uno en comun
+                        if a.combinacion[c] == 1 and  b.combinacion[c] == 1: # se consulta si precisamente la posisicon en cuestion contiene el uno en ambos elementos
+                            temp.append("-")
+                        temp.append(a.combinacion[c])
+                        ######
 
 
 if __name__ == "__main__":
@@ -53,24 +118,9 @@ if __name__ == "__main__":
     
     tablaverdad=crear_matriz([],numero_entradas,filas)        #Llamo la funcion que me crea la tabla de verdad
     
-    llenar_matriz(filas,numero_entradas,tablaverdad)
+    tablaverdad=llenar_matriz(filas, numero_entradas, tablaverdad) #se llena la matriz con los binarios 
 
-    Mcclaukey1=list() #lista de todas las grupaciones
-    listac=list() #lista para grupar por cantidad de 1
-    templist=list() #lista para recolectar el binario
+    matriz_nueva=minterms(tablaverdad,filas) # se solicitan los valores decimales donde la funcion es valida y se extraen sus valores binarios corresondientes
     
-    iterador=1
-    while iterador <= numero_entradas-2:  # se itera la cantidad de veces como variables hayan
-        for i in range(filas):    #se busca en cada fila
-            if tablaverdad[i][numero_entradas-1] == 1: # se verifica si la funcion es valida en ese numero
-                count=0
-                for a in range(numero_entradas-1): #se extrae el numero binario
-                    templist.append(tablaverdad[i][a]) #se guarda en la lista
-                    if tablaverdad[i][a] == 1: # se cuenta la cantidad de unos que contiene la tupla bianria
-                            count+=1 #contador de unos
-                if count == iterador: #en caso de que cuente con la cantidad de unos correspondientes al iterador={1,2,3,..,n}
-                    n1=nodo(templist,tablaverdad[i][0]) #se añade al nodo
-                    listac.append(n1) #finalmente se agrea a la lista correspondiente a esta cantidad de 1
-        Mcclaukey1.append(listac) #se añade la lista de tuplas ordenada segun su cantidad de unos
-        iterador+=1 # aumenta iterador para buscar la siguiente cantidad de unos
-    
+    listMC=EMCclauskey(tablaverdad,numero_entradas-1,filas)#primera agrupacion del maclauskey
+       
