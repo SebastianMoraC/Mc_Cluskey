@@ -100,7 +100,9 @@ def comparacionMC(MCclauskey):
         
         for a in templist1: #e comienza a recorrer la primera agrupacion con le fin de sacar una elemento y compararlos con todos los de la agrupacion siguiente
             for b in templist2: # se recorre la segunda agrupacion para compararla completamente con el elemento de sacado anteiormente
-                if a.combinacion == b.combinacion:# se consulta si estos dos elemetos son iguales
+                if (a.combinacion.count(1) == b.combinacion.count(1))
+                or ((a.combinacion.count(1))+1 == b.combinacion.count(1))
+                or ((a.combinacion.count(1)) == b.combinacion.count(1)):# se consulta si estos dos elemetos son iguales
                     temp= list() # esta variable temporal se encargara de solamente guardar el binario
                     for c in range(a.combinacion): # se comienzan a recorrer ambos elementos con el fin de encontrar la posicion donde se encuentra el uno en comun
                         if a.combinacion[c] == 1 and  b.combinacion[c] == 1: # se consulta si precisamente la posisicon en cuestion contiene el uno en ambos elementos
