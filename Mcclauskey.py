@@ -2,7 +2,7 @@
 
 class nodo(object): #objeto para armacenar tupla de binario y bumero decimal
 
-    def __init__(self,combinacion,binario):
+    def __init__(self,combinacion,decimal):
         self.combinacion=combinacion
         self.decimal=decimal
 
@@ -87,8 +87,9 @@ def EMCclauskey(matriz,variables,filas): # se ordenan los valores binarios por c
     return Mcclauskey
                 
                 
-def comparacionMC(MCclauskey):
-    Mcclauskeycomplete=list()
+def comparacionMC1(MCclauskey):
+    Mcclauskeycomplete=list() #lista que contendra las agrupaciones de las combinaciones resultantes
+    tempcombinaciones=list() #lista que tendra temporalmente cada agrupacion
     
     templist1=list() #lista para tomar una agrupacion 
     templist2=list() #lista para tomar la siguiente agrupacion
@@ -100,15 +101,22 @@ def comparacionMC(MCclauskey):
         
         for a in templist1: #e comienza a recorrer la primera agrupacion con le fin de sacar una elemento y compararlos con todos los de la agrupacion siguiente
             for b in templist2: # se recorre la segunda agrupacion para compararla completamente con el elemento de sacado anteiormente
-                if (a.combinacion.count(1) == b.combinacion.count(1))
-                or ((a.combinacion.count(1))+1 == b.combinacion.count(1))
-                or ((a.combinacion.count(1)) == b.combinacion.count(1)):# se consulta si estos dos elemetos son iguales
-                    temp= list() # esta variable temporal se encargara de solamente guardar el binario
-                    for c in range(a.combinacion): # se comienzan a recorrer ambos elementos con el fin de encontrar la posicion donde se encuentra el uno en comun
-                        if a.combinacion[c] == 1 and  b.combinacion[c] == 1: # se consulta si precisamente la posisicon en cuestion contiene el uno en ambos elementos
-                            temp.append("-")
-                        temp.append(a.combinacion[c])
-                        ######
+                if ((a.combinacion.count(1)+1 > b.combinacion.count(1)) or (a.combinacion.count(1) < b.combinacion.count(1))):# se consulta si estos dos elemetos tienen un bit de diferencia
+                    tempbinary= list() # esta variable temporal se encargara de solamente guardar el binario
+                    tempdecimal=list()
+                    for c in range(len(a.combinacion)): # se comienzan a recorrer ambos elementos con el fin de encontrar la posicion donde se encuentra el uno en comun
+                        if a.combinacion[c] != b.combinacion[c]: # se consulta si precisamente la posisicon en cuestion contiene el cambio de bit
+                            tempbinary.append("-") # se registra el cambio de bit
+                        else:
+                            tempbinary.append(a.combinacion[c])# si no se guarda la posicion normal
+                    tempdecimal.append(a.decimal) # se guarda el decimal del primer inplicante
+                    tempdecimal.append(b.decimal) # se guarda el decimal del segundo inplicante
+                    ni=nodo(tempbinary,tempdecimal) # se crea el objeto que guarda ambos datos tanto binarios como decimales
+                    tempbinary.clear() # se vacia con el fin de evitar redundancia
+                    tempdecimal.clear()
+                    tempcombinaciones.append(ni)# se guarda en la agripacion correspondiente
+        Mcclauskeycomplete.append(tempcombinaciones)# se guarda las agrupaciones y se procede a al siguiente grupo
+
 
 
 if __name__ == "__main__":
@@ -126,3 +134,4 @@ if __name__ == "__main__":
     
     listMC=EMCclauskey(tablaverdad,numero_entradas-1,filas)#primera agrupacion del maclauskey
        
+    
