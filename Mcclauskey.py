@@ -93,109 +93,73 @@ def EMCclauskey(matriz,variables): # se ordenan los valores binarios por cantida
         iteracion+=1 # aumenta la iteraion con el fin de comprobar todas las cantidades de unos
     return Mcclauskey
 
-def ecuacion(Matriz, implicantes):
-    tempecuacion=list() #lista que contendra la ecuacion de la tupla y los valores decimales que lo formaron
-    temp=list() # lista para agrupar en una sola lista los caracteres y los numero
-    tempcaracter=list() #lista para guardar los caracteres
-    tempnumber=list() # lista para guardar los decimales
-    strin=""# variable para guardar el texto correspondiente a 
+def ecuacion(Matriz):
     Leters=["A","B","C","D","E","F","G","H","I","J","K","L","M","N"] # letras para representar las variables
-    stemp1=""
-    ubicacion=0
-    for a in Matriz: # se recorre la lista
-        for b in a: # se recorre las listas contenidas
-            flag=0
-            if b == a[-1]: # en caso de que se trate el ultimo elemento no se colocara un "+" al final
-                count=0# variable para recorrer la lista de letras
-                for c in b[0]:# se recorre el binario
-                    if c == 0: # se averigua si es 0
-                        strin=strin+"not("+Leters[count]+")"# se guardan los caranteres
-                        print("not("+Leters[count]+")",end="")# se muestran los caracteres
-                    elif c == 1: # para el caso de que sea 1
-                        strin=strin+Leters[count]
-                        print(Leters[count],end="")
-                    count+=1
-                flag+=1
-            else: # en caso contrario se imprimiran los caracteres y un "+" al final
-                count=0
-                for c in b[0]:
-                    if c == 0:
-                        strin=strin+"not("+Leters[count]+")"
-                        print("not("+Leters[count]+")",end="")
-                    elif c == 1:
-                        strin=strin+Leters[count]
-                        print(Leters[count],end="")
-                    count+=1
-                flag+=1
-                print(" + ",end="")
+    print(Matriz[1])
+    for a in Matriz: # se recorre la matriz
+        if a == Matriz[-1]:
+            for b in range(len(a[0])):
+                if a[0][b] == 1:
+                    print(Leters[b],end="")
+                if a[0][b] == 0:
+                    print("not("+Leters[b]+")",end="")
+        else:
+            for b in range(len(a[0])):
+                if a[0][b] == 1:
+                        print(Leters[b],end="")
+                if a[0][b] == 0:
+                    print("not("+Leters[b]+")",end="")
+            print(" + ",end="")
 
-            if flag == 1:
-                stemp1=strin
-                tempcaracter.append(strin) # finalmente se guarda la cadena con la ecuacion correspondiente al binario resultante
-                for i in b[1]: # se almacena los valores decimales que formaron el binario resultante
-                    tempnumber.append(i)
-                temp.append(tempcaracter) # se guardan los caracteres en una lista junto con los decimales
-                temp.append(tempnumber)
-                tempecuacion.append(temp) # se guarda la lista que contiene tanto la ecuacion como los decimales
-                ubicacion=len(tempecuacion)-1
+def reduccion(matrices,implicantes): # se reducen los valores que poseen la misma ecuacion
+    result=list() # resultado de eliminar todos los elementos repetidos
+    termino =0  
+    previous=list()
+    temp_decimal=list()
+    
+    for a in range(len(matrices[0])):
+        if a+1 >= len(matrices[0]):
+            break
+        temp1=((matrices[0])[a])
+        temp2=((matrices[0])[a+1])
+        if temp1[0] == temp2[0]:
+            for b in temp2[1]:
+                if not(b in temp1[1]):
+                    temp_decimal.append(b)
+            if not(temp_decimal == []):
+                for c in temp_decimal:
+                    temp1[1].append(c)
+                temp_decimal=[]
+            if termino <= 0:
+                result.append(temp1)
+                termino=1
+                previous=temp1
+                temp1=[]
+                temp2=[]
             else:
-                if stemp1 != strin:
-                    stemp1 = strin
-
-                    #######################################
-                    tempcaracter.append(strin) # finalmente se guarda la cadena con la ecuacion correspondiente al binario resultante
-                    for i in b[1]: # se almacena los valores decimales que formaron el binario resultante
-                        tempnumber.append(i)
-                    temp.append(tempcaracter) # se guardan los caracteres en una lista junto con los decimales
-                    temp.append(tempnumber)
-                    tempecuacion.append(temp) # se guarda la lista que contiene tanto la ecuacion como los decimales
-                    ubicacion=len(tempecuacion)-1
-                elif stemp1 == strin:
-                    print("entro")
-                    for i in b[1]: # se almacena los valores decimales que formaron el binario resultante
-                        (tempecuacion[ubicacion])[1].append(i)
-
-            strin="" # se vacia para evitar concurrencia
-            tempcaracter=[]
-            tempnumber=[]
-
-    # en caso de que hayan aparecido primeros implicantes se revisa la lista si existe alguno y se realiza de nuevo el anterior proceso
-    if len(implicantes) > 0:
-        print(" + ",end="")             
-        for a in implicantes:
-            if a == implicantes[-1]:
-                count=0
-                for c in a[0]:
-                    if c == 0:
-                        strin=strin+"not("+Leters[count]+")"
-                        print("not("+Leters[count]+")",end="")
-                    elif c == 1:
-                        strin=strin+Leters[count]
-                        print(Leters[count],end="")
-                    count+=1
+                temp_decimal = temp1
+                for d in temp2[1]:
+                    if not(b in temp1[1]):
+                     temp_decimal.append(d)
+                if not(temp_decimal == []):
+                    for e in temp_decimal:
+                        if e in (result[termino-1])[1]:
+                            (result[termino-1])[1].append(e)
+        elif temp2 != temp1:
+            if termino <= 0:
+                result.append(temp1)
+                termino+=1
+                result.append(temp2)
+                termino+=1
+                temp1=[]
+                temp2=[]
             else:
-                count=0
-                for c in a[0]:
-                    if c == 0:
-                        strin=strin+"not("+Leters[count]+")"
-                        print("not("+Leters[count]+")",end="")
-                    elif c == 1:
-                        strin=strin+Leters[count]
-                        print(Leters[count],end="")
-                    count+=1
-                print(" + ",end="")
-            tempcaracter.append(strin) # finalmente se guarda la cadena con la ecuacion correspondiente al binario resultante
-            strin="" # se vacia para evitar concurrencia
-            for i in a[1]: # se almacena los valores decimales que formaron el binario resultante
-                tempnumber.append(i)
-            temp.append(tempcaracter) # se guardan los caracteres en una lista junto con los decimales
-            temp.append(tempnumber)
-            tempcaracter=[]
-            tempnumber=[]
-            tempecuacion.append(temp) # se guarda la lista que contiene tanto la ecuacion como los decimales
-
-    return tempecuacion
-
+                result.append(temp2)
+                termino+=1
+    for z in implicantes:
+        result.append(z)
+    return result
+  
 def revision(a,b): # se confirma se exactamente cambia un bit entre los dos binarios en cuestion
     counte=0
 
@@ -286,10 +250,13 @@ def comparacionMC(MCclauskey):
 
         Mcclauskeycomplete.append(tempMcclauskeycomplete)
         tempMcclauskeycomplete=[]
-    ec=list()
-    ec=ecuacion(Mcclauskeycomplete[-1],implicantes)    
+    #ec=list()
+    #ec=ecuacion(Mcclauskeycomplete[-1],implicantes)
+     
+    solutions=list()
+    solutions=reduccion(Mcclauskeycomplete[-1],implicantes)  
 
-    return Mcclauskeycomplete
+    return solutions
 
 if __name__ == "__main__":
     
@@ -307,4 +274,5 @@ if __name__ == "__main__":
 
     matriz_nueva.clear()
     matriz_nueva=comparacionMC(listMC)
+    ecuacion(matriz_nueva)
 
