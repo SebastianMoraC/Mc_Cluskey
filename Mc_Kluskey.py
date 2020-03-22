@@ -322,7 +322,6 @@ def analisis(matriz,ecuacion_final,columnas,filas):
             matriz_nueva.append(matriz[i])
             s+=1
     if(s>1):
-        print("hola")
         ecuacion_final=contar(matriz_nueva,ecuacion_final,len(matriz_nueva),len(matriz_nueva[0]))
 
     return ecuacion_final
@@ -358,7 +357,7 @@ def contar(matriz,ecuacion_final,filas,columnas):
     #print("-------------------")
     #if (len(matriz) == 1 or len(matriz)==2):
     #    ecuacion_final.append(matriz[0][0])
-    if(mayor==calcular_mayor(matriz) or len(matriz)!=1):
+    if(mayor==calcular_mayor(matriz) and len(matriz)>1):
             contar(matriz,ecuacion_final,columnas,len(matriz)-1)
     else:
         for p in range(len(matriz)-1):
@@ -416,7 +415,7 @@ if __name__ == "__main__":
     lista_minimos=[]
     filas = filas ** (numero_entradas - 1)  # Las filas serán igual a 2 elevado al numero de entradas
     tablaverdad = crear_matriz([], numero_entradas, filas)  # Llamo la funcion que me crea la tabla de verdad
-
+    dibujar_matriz(tablaverdad,numero_entradas,filas)
     tablaverdad = llenar_matriz(filas, numero_entradas, tablaverdad)  # se llena la matriz con los binarios
 
     matriz_nueva = minterms(tablaverdad, filas,lista_minimos)  # se solicitan los valores decimales donde la funcion es valida y se extraen sus valores binarios corresondientes
