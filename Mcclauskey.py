@@ -1,3 +1,5 @@
+import os
+
 def crear_matriz(matriz, columnas, filas):  # Funcion que crea matrices
     for i in range(filas):
         matriz.append([])
@@ -41,7 +43,7 @@ def llenar_matriz(filas, columnas, matriz):  # Esta funcion llena las matrices d
         iteracion = 0
     return matriz
 
-def minterms(matriz, filas,lista):
+def minterms(matriz, filas, lista):
     matriz_nueva = []
     iteracion = 0
     print(
@@ -51,7 +53,7 @@ def minterms(matriz, filas,lista):
     # for i in range(filas):
     while iteracion < filas:
         valor = int(input("Ingrese el minterm: "))
-        if valor <= filas - 1 :
+        if valor <= filas - 1:
             if valor != -1:
                 matriz_nueva.append(matriz[valor])
                 lista.append(valor)
@@ -100,10 +102,10 @@ def EMCclauskey(matriz, variables):  # se ordenan los valores binarios por canti
         iteracion += 1  # aumenta la iteraion con el fin de comprobar todas las cantidades de unos
     return Mcclauskey
 
-def ecuacion(Matriz): # se imprime la ecuacion
+def ecuacion(Matriz):  # se imprime la ecuacion
     Leters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
               "N"]  # letras para representar las variables
-    #print(Matriz[1])
+    # print(Matriz[1])
     for a in Matriz:  # se recorre la matriz
         if a == Matriz[-1]:
             for b in range(len(a[0])):
@@ -120,55 +122,76 @@ def ecuacion(Matriz): # se imprime la ecuacion
             print(" + ", end="")
 
 def reduccion(matrices, implicantes):  # se reducen los valores que poseen la misma ecuacion
+    tempresult =list()
     result = list()  # resultado de eliminar todos los elementos repetidos
-    termino = 0 # entero para saber la cantidad de terminos revisados
+    termino = 0  # entero para saber la cantidad de terminos revisados
     previous = list()
     temp_decimal = list()
-    for ini in range(len(matrices)): # se recorre la matriz
-        termino=0
-        for a in range(len(matrices[ini])): # se recorre cada agrupacion de unos
-            if len(matrices[ini]) == 1: # se consulta si hay un unico elemento en la grupacion de unos
-                result.append(matrices[ini][a]) # se grega la combinacion binario y sus valores decimales
-            if a + 1 >= len(matrices[ini]):# en caso de que no hayan mas se cierra el ciclo
+    for ini in range(len(matrices)):  # se recorre la matriz
+        termino = 0
+        for a in range(len(matrices[ini])):  # se recorre cada agrupacion de unos
+            if len(matrices[ini]) == 1:  # se consulta si hay un unico elemento en la grupacion de unos
+                tempresult.append(matrices[ini][a])  # se grega la combinacion binario y sus valores decimales
+            if a + 1 >= len(matrices[ini]):  # en caso de que no hayan mas se cierra el ciclo
                 break
-            temp1 = ((matrices[ini])[a])
-            temp2 = ((matrices[ini])[a + 1])
-            if temp1[0] == temp2[0]:
-                for b in temp2[1]:
-                    if not (b in temp1[1]):
+            temp1 = ((matrices[ini])[a])  # se toma un elemento de la lista
+            temp2 = ((matrices[ini])[a + 1]) # se toma el elemento siguiente en la lista
+
+            if temp1[0] == temp2[0]: # en caso de que sean iguales los binarios
+                for b in temp2[1]: # en caso tal de que hayan valores en una combinacion binaria y en la otra que es exactamente igual se extraen para proximamente ser agregada en la parte siguiente 
+                    if not(b in temp1[1]):
                         temp_decimal.append(b)
-                if not (temp_decimal == []):
+                if not (temp_decimal == []): # en caso de que no este vacio
                     for c in temp_decimal:
                         temp1[1].append(c)
                     temp_decimal = []
                 if termino <= 0:
-                    result.append(temp1)
+                    tempresult.append(temp1)
                     termino = 1
                     previous = temp1
                     temp1 = []
                     temp2 = []
+                    temp_decimal=[]
                 else:
                     temp_decimal = temp1
                     for d in temp2[1]:
                         if not (b in temp1[1]):
                             temp_decimal.append(d)
                     if not (temp_decimal == []):
-                        for e in temp_decimal:
-                            if e in (result[termino - 1])[1]:
-                                (result[termino - 1])[1].append(e)
-            elif temp2[0] != temp1[0]:
+                        for e in temp_decimal[1]:
+                            if not(e in (tempresult[termino - 1])[1]):
+                                (tempresult[termino - 1])[1].append(e)
+                    temp_decimal=[]
+            elif temp2[0] != temp1[0]: # en caso tal de que no se 
                 if termino <= 0:
-                    result.append(temp1)
+                    tempresult.append(temp1)
                     termino += 1
-                    result.append(temp2)
+                    tempresult.append(temp2)
                     termino += 1
                     temp1 = []
                     temp2 = []
                 else:
-                    result.append(temp2)
+                    tempresult.append(temp2)
                     termino += 1
+                    temp2=[]
+
     for z in implicantes:
-        result.append(z)
+        tempresult.append(z)
+
+
+    count=0
+    for z1 in tempresult :
+        for a in range(1,len(tempresult)):
+            print(z1[0])
+            print((tempresult[a])[0])
+            print(" ")
+            if z1[0] != (tempresult[a])[0]:
+                count=0
+            else:
+                count=1
+        if count == 0:
+            result.append(z1)
+
     return result
 
 def revision(a, b):  # se confirma se exactamente cambia un bit entre los dos binarios en cuestion
@@ -182,7 +205,8 @@ def revision(a, b):  # se confirma se exactamente cambia un bit entre los dos bi
     else:
         return False  # en caso contraio no se podra ejecutar la mezcla
 
-def comparacionMC(MCclauskey): # se realiza las comparaciones entre cada grupo de binarios hasta que no hayan combinaciones posibles devolviendo los binarios corresponidntes a la ecuacion
+def comparacionMC(
+        MCclauskey):  # se realiza las comparaciones entre cada grupo de binarios hasta que no hayan combinaciones posibles devolviendo los binarios corresponidntes a la ecuacion
     Mcclauskeycomplete = list()  # matriz que contendra las agrupaciones de las combinaciones resultantes
     tempMcclauskeycomplete = list()
     tempcombinaciones = list()  # lista que tendra temporalmente cada agrupacion
@@ -191,7 +215,7 @@ def comparacionMC(MCclauskey): # se realiza las comparaciones entre cada grupo d
     templist1 = list()  # lista para tomar una agrupacion
     templist2 = list()  # lista para tomar la siguiente agrupacion
     ni = list()  # lista de decimal combiancion binaria y validacion
-    combinaciones=bool()
+    combinaciones = bool()
 
     fin = 0
     while fin != 1:
@@ -241,13 +265,13 @@ def comparacionMC(MCclauskey): # se realiza las comparaciones entre cada grupo d
             tempcombinaciones = []
             i += 1
         comprobaciondefin = 0  # se utilizara para saber si se mezclo algun elemento
-        
-        if len(tempMcclauskeycomplete) == 0: # condicional para saber el fin del proceso
-            if  not(len(Mcclauskeycomplete) == 0): # condicional para saber si no hubo combinacion
-                combinaciones=True
+
+        if len(tempMcclauskeycomplete) == 0:  # condicional para saber el fin del proceso
+            if not (len(Mcclauskeycomplete) == 0):  # condicional para saber si no hubo combinacion
+                combinaciones = True
                 break
             else:
-                combinaciones=False # si no hay combinacion alguna
+                combinaciones = False  # si no hay combinacion alguna
 
         for a in MCclauskey:  # se recorre cada lista
             for b in a:  # se recorres cada binario
@@ -368,7 +392,7 @@ def contar(matriz,ecuacion_final,filas,columnas):
     #print("-------------------")
     #if (len(matriz) == 1 or len(matriz)==2):
     #    ecuacion_final.append(matriz[0][0])
-    if(mayor==calcular_mayor(matriz) or len(matriz)!=1):
+    if(mayor==calcular_mayor(matriz) and len(matriz)>1):
             contar(matriz,ecuacion_final,columnas,len(matriz)-1)
     else:
         for p in range(len(matriz)-1):
@@ -417,29 +441,29 @@ def verificacion(matriz,columnas,filas):
     #print(ecuacion_final)
     return ecuacion_final
 
+
 if __name__ == "__main__":
-    numero_entradas = int(input("Introduce el numero de variables: ")) + 1  # En esta variable se guardaran el numero de variables o columnas
+    numero_entradas = int(input(
+        "Introduce el numero de variables: ")) + 1  # En esta variable se guardaran el numero de variables o columnas
     filas = 2
-    lista_minimos=[]
+    lista_minimos = []
     filas = filas ** (numero_entradas - 1)  # Las filas serán igual a 2 elevado al numero de entradas
     tablaverdad = crear_matriz([], numero_entradas, filas)  # Llamo la funcion que me crea la tabla de verdad
 
     tablaverdad = llenar_matriz(filas, numero_entradas, tablaverdad)  # se llena la matriz con los binarios
 
-    matriz_nueva = minterms(tablaverdad, filas,lista_minimos)  # se solicitan los valores decimales donde la funcion es valida y se extraen sus valores binarios corresondientes
-    #print(lista_minimos)
+    matriz_nueva = minterms(tablaverdad, filas,
+                            lista_minimos)  # se solicitan los valores decimales donde la funcion es valida y se extraen sus valores binarios corresondientes
     listMC = EMCclauskey(matriz_nueva, numero_entradas)
 
     matriz_nueva.clear()
     matriz_nueva = comparacionMC(listMC)
     print("---------------------------------------------")
-    #print(matriz_nueva)
     print("La ecuación sin verificar es: ")
     ecuacion(matriz_nueva)
     print(" ")
-    matriz_final=llenar_verificacion(matriz_nueva,lista_minimos)#minimos - columnas
-    matriz_final=verificacion(matriz_final,len(lista_minimos)+1,len(matriz_nueva)+1) #primero columnas
-
+    matriz_final = llenar_verificacion(matriz_nueva, lista_minimos)  # minimos - columnas
+    matriz_final = verificacion(matriz_final, len(lista_minimos) + 1, len(matriz_nueva) + 1)  # primero columnas
 
     print("---------------------------------------------------------------------")
     print("La ecuación verificada es: ")
