@@ -122,6 +122,7 @@ def ecuacion(Matriz):  # se imprime la ecuacion
             print(" + ", end="")
 
 def reduccion(matrices, implicantes):  # se reducen los valores que poseen la misma ecuacion
+    tempresult =list()
     result = list()  # resultado de eliminar todos los elementos repetidos
     termino = 0  # entero para saber la cantidad de terminos revisados
     previous = list()
@@ -130,7 +131,7 @@ def reduccion(matrices, implicantes):  # se reducen los valores que poseen la mi
         termino = 0
         for a in range(len(matrices[ini])):  # se recorre cada agrupacion de unos
             if len(matrices[ini]) == 1:  # se consulta si hay un unico elemento en la grupacion de unos
-                result.append(matrices[ini][a])  # se grega la combinacion binario y sus valores decimales
+                tempresult.append(matrices[ini][a])  # se grega la combinacion binario y sus valores decimales
             if a + 1 >= len(matrices[ini]):  # en caso de que no hayan mas se cierra el ciclo
                 break
             temp1 = ((matrices[ini])[a])  # se toma un elemento de la lista
@@ -140,12 +141,12 @@ def reduccion(matrices, implicantes):  # se reducen los valores que poseen la mi
                 for b in temp2[1]: # en caso tal de que hayan valores en una combinacion binaria y en la otra que es exactamente igual se extraen para proximamente ser agregada en la parte siguiente 
                     if not(b in temp1[1]):
                         temp_decimal.append(b)
-                if not (temp_decimal == []):
+                if not (temp_decimal == []): # en caso de que no este vacio
                     for c in temp_decimal:
                         temp1[1].append(c)
                     temp_decimal = []
                 if termino <= 0:
-                    result.append(temp1)
+                    tempresult.append(temp1)
                     termino = 1
                     previous = temp1
                     temp1 = []
@@ -158,25 +159,35 @@ def reduccion(matrices, implicantes):  # se reducen los valores que poseen la mi
                             temp_decimal.append(d)
                     if not (temp_decimal == []):
                         for e in temp_decimal[1]:
-                            if not(e in (result[termino - 1])[1]):
-                                (result[termino - 1])[1].append(e)
+                            if not(e in (tempresult[termino - 1])[1]):
+                                (tempresult[termino - 1])[1].append(e)
                     temp_decimal=[]
-            elif temp2[0] != temp1[0]:
+            elif temp2[0] != temp1[0]: # en caso tal de que no se 
                 if termino <= 0:
-                    result.append(temp1)
+                    tempresult.append(temp1)
                     termino += 1
-                    result.append(temp2)
+                    tempresult.append(temp2)
                     termino += 1
                     temp1 = []
                     temp2 = []
                 else:
-                    result.append(temp2)
+                    tempresult.append(temp2)
                     termino += 1
                     temp2=[]
 
+    count=0
+    for z1 in tempresult :
+        for a in range(1,len(tempresult)):
+            if z1[0] != (tempresult[a])[0]:
+                count=0
+            else:
+                count=1
+        if count == 0:
+            result.append(z1)
+            
     for z in implicantes:
         result.append(z)
-        
+
     return result
 
 def revision(a, b):  # se confirma se exactamente cambia un bit entre los dos binarios en cuestion
@@ -439,7 +450,6 @@ if __name__ == "__main__":
 
     matriz_nueva = minterms(tablaverdad, filas,
                             lista_minimos)  # se solicitan los valores decimales donde la funcion es valida y se extraen sus valores binarios corresondientes
-    # print(lista_minimos)
     listMC = EMCclauskey(matriz_nueva, numero_entradas)
 
     matriz_nueva.clear()
